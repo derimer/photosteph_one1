@@ -1,10 +1,68 @@
 // Load the express module to create a web application
 
 const express = require("express");
-
+const mysql = require("mysql2");
 const app = express();
+const cors = require("cors");
+const path = require("path");
+const db = require("/home/isis/photosteph_one/server/database");
 
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT 1");
+    res.json({ message: "Connexion à la base de données réussie", data: rows });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur de connexion à la base de données",
+      error: error.message,
+    });
+  }
+});
+app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+  })
+);
+
+const apiRouter = require("./routers/api/router");
+app.use("/api", apiRouter);
+
+const reactBuildPath = path.join(__dirname, "/../../client/build");
+const publicFolderPath = path.join(__dirname, "/../public");
+app.use(express.static(reactBuildPath));
+
+// Servir les ressources du serveur
+app.use(
+  "/assets",
+  express.static(path.join(publicFolderPath, "assets"), { maxAge: "1y" })
+);
 // Configure it
+app.post("/send-email", (req, res) => {
+  const { firstName, lastName, email, message } = req.body;
+
+  // Logique pour gérer l'envoi d'email, par exemple avec Nodemailer
+  // ou une autre méthode de traitement des données du formulaire
+
+  console.log(
+    `firstName: ${firstName},lastName:${lastName} Email: ${email}, Message: ${message}`
+  );
+
+  // Pour l'instant, nous renvoyons une réponse de succès
+  res.status(200).send("OK");
+});
+app.get("*", (_, res) => {
+  res.sendFile(path.join(reactBuildPath, "index.html"));
+});
+
+// Middleware de gestion des erreurs (doit être défini en dernier)
+const logErrors = (err, req, res, next) => {
+  console.error(err);
+  console.error("Requête en erreur :", req.method, req.path);
+  next(err);
+};
+
+app.use(logErrors);
 
 /* ************************************************************************* */
 
@@ -12,8 +70,6 @@ const app = express();
 
 // CORS (Cross-Origin Resource Sharing) is a security mechanism in web browsers that blocks requests from a different domain than the server.
 // You may find the following magic line in forums:
-
-// app.use(cors());
 
 // You should NOT do that: such code uses the `cors` module to allow all origins, which can pose security issues.
 // For this pedagogical template, the CORS code is commented out to show the need for defining specific allowed origins.
@@ -24,20 +80,6 @@ const app = express();
 // 3. Uncomment the section `app.use(cors({ origin: [...] }))`
 // 4. Be sure to only have URLs in the array with domains from which you want to allow requests.
 // For example: ["http://mysite.com", "http://another-domain.com"]
-
-/*
-const cors = require("cors");
-
-app.use(
-  cors({
-    origin: [
-      process.env.CLIENT_URL, // keep this one, after checking the value in `server/.env`
-      "http://mysite.com",
-      "http://another-domain.com",
-    ]
-  })
-);
-*/
 
 /* ************************************************************************* */
 
@@ -85,10 +127,8 @@ app.use(
 /* ************************************************************************* */
 
 // Import the API router
-const apiRouter = require("./routers/api/router");
 
 // Mount the API router under the "/api" endpoint
-app.use("/api", apiRouter);
 
 /* ************************************************************************* */
 
