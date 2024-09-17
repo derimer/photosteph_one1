@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const ContactRepository = require("../../database/models/contactRepository");
+const ContactRepository = require("../../database/models/ContactRepository");
 
 const contactRepository = new ContactRepository();
 

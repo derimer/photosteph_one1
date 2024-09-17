@@ -45,6 +45,9 @@ export default function Admin() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
+    
+     
+    // 10 Mo
     setFile(selectedFile);
 
     const reader = new FileReader();
@@ -61,30 +64,36 @@ export default function Admin() {
       setError("Veuillez remplir tous les champs et sélectionner une image");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", newImage.name);
     formData.append("author", newImage.author);
     formData.append("exposure", newImage.exposure);
-
+  
     try {
-      const response = await fetch("http://localhost:3310/public/uploads", {
+      const response = await fetch("http://localhost:3310/api/add-image", {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) throw new Error("Erreur lors de l'ajout de l'image");
-      const result = await response.json();
-      setImages([...images, result]);
-      setNewImage({ name: "", author: "", exposure: "" });
-      setFile(null);
-      setPreview("");
-      setError("");
-    } catch (error) {
-      console.error("Erreur lors de l'ajout de l'image:", error);
-      setError("Erreur lors de l'ajout de l'image");
-    }
-  };
+  
+      // Vérifiez si la réponse est au format JSON
+     if (!response.ok) throw new Error("Erreur lors de l'ajout de l'image");
+    
+     const data = await response.json();
+    console.log("Image ajoutée avec succès", data);
+ 
+  setImages([...images, data.image]);
+  setNewImage({ name: "", author: "", exposure: "" });
+    setFile(null);
+    setPreview("");
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'image:", error);
+    setError("Erreur lors de l'ajout de l'image");
+  }
+}
+
+  
 
   const handleDeleteImage = async (id) => {
     try {

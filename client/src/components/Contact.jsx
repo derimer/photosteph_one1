@@ -41,9 +41,9 @@ export default function Contact() {
 
   return (
     <main id="contact1">
-      <h1>Contactez-nous</h1>
+      <h1>Contactez-moi</h1>
       <p>
-        Merci de compléter le formulaire suivant pour nous contacter. Tous les
+        Merci de compléter le formulaire suivant pour me contacter. Tous les
         champs de ce formulaire sont requis.
       </p>
       <form onSubmit={handleSubmit} id="frmContact" noValidate>

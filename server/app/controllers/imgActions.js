@@ -1,9 +1,9 @@
 // controllers/imageController.js
 const path = require("path");
 const multer = require("multer"); // Importer Multer
-const ImageRepository = require("../../database/models/imageRepository");
-
+const ImageRepository = require("../../database/models/ImageRepository");
 const imageRepository = new ImageRepository();
+
 
 // Configuration Multer pour le stockage des fichiers
 const storage = multer.diskStorage({
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const uploads = multer({ storage: storage }); // Initialiser Multer avec le stockage configuré
+const upload = multer({ storage: storage }); // Initialiser Multer avec le stockage configuré
 
 // Route pour obtenir toutes les images
 exports.getAllImages = async (req, res) => {
@@ -34,13 +34,12 @@ exports.getAllImages = async (req, res) => {
   }
 };
 
-// Route pour ajouter une image avec Multer
-exports.addImage = [
-  uploads.single("file"), // Utiliser Multer pour le téléchargement de fichiers
-  async (req, res) => {
+
+exports.addImage = async (req, res) => {
     const { name, author, exposure } = req.body;
     console.log("Fichier reçu:", req.file);
     console.log("Données reçues:", req.body);
+    
     // Vérifiez si un fichier a été téléchargé
     if (!req.file) {
       return res.status(400).json({ message: "Aucun fichier téléchargé" });
@@ -61,7 +60,9 @@ exports.addImage = [
         author,
         exposure,
       });
-      res.status(201).json({ message: "Image ajoutée avec succès", id });
+      const newImage = await ImageRepository.read(id);
+      res.status(201).json({ message: "Image ajoutée avec succès", image: newImage });
+      res.status(201).json({ message: "image ajoutée avec succès",image:newImage });
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'image:", error.message);
       res.status(500).json({
@@ -69,8 +70,8 @@ exports.addImage = [
         error: error.message,
       });
     }
-  },
-];
+  }
+
 
 // Route pour supprimer une image
 exports.deleteImage = async (req, res) => {

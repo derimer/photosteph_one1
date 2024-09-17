@@ -227,7 +227,7 @@ main#contact1 {
   color: #333;
 }
 #About {
-  margin-top: 150px;
+  margin-top:80px;
   color: #333;
   display: flex;
   justify-content: center;
@@ -330,6 +330,9 @@ main#contact1 {
     width: 280px;
     height: 280px;
   }
+}
+main#contact1{
+  margin-top: 80px;
 }
 .gestion {
   text-align: center;

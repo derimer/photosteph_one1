@@ -5,10 +5,10 @@ class ContactRepository extends AbstractRepository {
     super({ table: "Contact" });
   }
 
-  async create(Contact) {
+  async create({ firstName, lastName, email, message }) {
     const [result] = await this.database.query(
       `INSERT INTO ${this.table} (firstName, lastName, email, message) VALUES (?, ?, ?, ?)`,
-      [contact.firstName, contact.lastName, contact.email, contact.message]
+      [firstName, lastName, email, message]
     );
 
     return result.insertId;
@@ -28,9 +28,9 @@ class ContactRepository extends AbstractRepository {
     return rows;
   }
 
-  async update() {
-    const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
-    return rows;
+  async update(id, { firstName, lastName, email, message }) {
+    const query = `UPDATE ${this.table} SET firstName = ?, lastName = ?, email = ?, message = ? WHERE id = ?`;
+    await this.database.query(query, [firstName, lastName, email, message, id]);
   }
 }
 
