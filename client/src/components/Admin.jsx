@@ -155,10 +155,10 @@ export default function Admin() {
           }
           required
         />
-        <button onClick={handleAddImage}>Ajouter l'image</button>
+        <button id ="ajouterImg" onClick={handleAddImage}>Ajouter l'image</button>
       </div>
 
-      <div>
+      <div className ="exist">
         <h2>Images existantes</h2>
         <ul>
           {images.map((image) => (
