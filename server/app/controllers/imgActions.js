@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(
       null,
-      path.join(__dirname, "../../../public/uploads/CONFIG/multerConfig")
+      path.join(__dirname, "../../../public/uploads")
     ); // Dossier de stockage
   },
   filename: (req, file, cb) => {
@@ -35,7 +35,7 @@ exports.getAllImages = async (req, res) => {
 };
 
 
-exports.addImage = async (req, res) => {
+/*exports.addImage = async (req, res) => {
     const { name, author, exposure } = req.body;
     console.log("Fichier reçu:", req.file);
     console.log("Données reçues:", req.body);
@@ -70,7 +70,47 @@ exports.addImage = async (req, res) => {
         error: error.message,
       });
     }
+  }*/exports.addImage = async (req, res) => {
+  const { name, author, exposure } = req.body;
+  console.log("Fichier reçu:", req.file);
+  console.log("Données reçues:", req.body);
+
+  // Vérifiez si un fichier a été téléchargé
+  if (!req.file) {
+    return res.status(400).json({ message: "Aucun fichier téléchargé" });
   }
+
+  const filename = req.file.filename; // Multer fournit le nom du fichier
+
+  // Vérifiez si tous les champs nécessaires sont remplis
+  if (!filename || !name || !author || !exposure) {
+    return res.status(400).json({ message: "Tous les champs sont requis" });
+  }
+
+  try {
+    // Crée une entrée dans la base de données
+    const id = await imageRepository.create({
+      filename,
+      name,
+      author,
+      exposure,
+    });
+    
+    // Récupère la nouvelle image créée
+    const newImage = await imageRepository.read(id);
+    
+    // Envoie une seule réponse avec l'image ajoutée
+    res.status(201).json({ message: "Image ajoutée avec succès", image: newImage });
+    
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'image:", error.message);
+    res.status(500).json({
+      message: "Erreur lors de l'ajout de l'image",
+      error: error.message,
+    });
+  }
+};
+
 
 
 // Route pour supprimer une image

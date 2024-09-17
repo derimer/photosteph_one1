@@ -289,6 +289,13 @@ main#contact1 {
 #mainNav.open {
   display: flex;
 }
+.gestion{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap:100px;
+}
 @media screen and (min-width: 768px) {
   #mainNav {
     display: block; /* Toujours afficher le menu sur desktop */
