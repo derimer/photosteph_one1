@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Admin() {
   const [images, setImages] = useState([]);
@@ -37,10 +37,6 @@ export default function Admin() {
       setError("Impossible de charger les images");
     }
   };
-  useEffect(() => {
-    fetchMessages();
-    fetchImages();
-  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -112,14 +108,23 @@ export default function Admin() {
           method: "DELETE",
         }
       );
-      if (!response.ok)
-        throw new Error("Erreur lors de la suppression de l'image");
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Réponse du serveur:", errorData);
+        throw new Error("Erreur lors de la suppression du message");
+      }
+      // Log de succès
+      console.log("Message supprimé avec succès");
       setMessages(messages.filter((message) => message.id !== id));
     } catch (error) {
       console.error("Erreur:", error);
-      setError("Erreur lors de la suppression de l'image");
+      setError("Erreur lors de la suppression du message");
     }
   };
+  useEffect(() => {
+    fetchMessages();
+    fetchImages();
+  }, []);
   return (
     <div className="gestion">
       <h1>Gestion des Images</h1>
@@ -166,7 +171,7 @@ export default function Admin() {
           }
           required
         />
-        <button id="ajouterImg" onClick={handleAddImage}>
+        <button type="button" id="ajouterImg" onClick={handleAddImage}>
           Ajouter l'image
         </button>
       </div>
@@ -177,7 +182,7 @@ export default function Admin() {
           {images.map((image) => (
             <li key={image.id}>
               {image.name} - {image.author} - {image.exposure}
-              <button onClick={() => handleDeleteImage(image.id)}>
+              <button type="button" onClick={() => handleDeleteImage(image.id)}>
                 Supprimer
               </button>
             </li>
@@ -195,7 +200,10 @@ export default function Admin() {
                 </strong>
                 ({message.email}):
                 <p>{message.message}</p>
-                <button onClick={() => handleDeleteMessage(message.id)}>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteMessage(message.id)}
+                >
                   supprimer
                 </button>
               </li>

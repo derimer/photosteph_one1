@@ -14,7 +14,7 @@ class ContactRepository extends AbstractRepository {
     return result.insertId;
   }
 
-  async read(id) {
+  async readById(id) {
     const [rows] = await this.database.query(
       `SELECT * FROM ${this.table} WHERE id = ?`,
       [id]
@@ -33,17 +33,19 @@ class ContactRepository extends AbstractRepository {
     await this.database.query(query, [firstName, lastName, email, message, id]);
   }
 
-  async delete(id) {
+  async deleteById(id) {
     try {
+      console.error("appel");
       const result = await this.database.query(
         "DELETE FROM Contact WHERE id = ?",
         [id]
       );
-      return result.affectedRows > 0; // Retourne true si un message a été supprimé
+      return result; // Retournez le résultat pour un éventuel traitement
     } catch (error) {
-      console.error("Erreur lors de la suppression du message:", error);
-      throw error;
+      console.error("Erreur lors de la suppression du contact :", error);
+      throw error; // Relancez l'erreur pour une gestion ultérieure
     }
   }
 }
+
 module.exports = ContactRepository;

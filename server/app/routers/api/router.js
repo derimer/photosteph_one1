@@ -17,21 +17,29 @@ router.delete("/images/:id", imgActions.deleteImage);
 router.post("/Contact", async (req, res) => {
   const { firstName, lastName, email, message } = req.body;
 
+  // Validation des champs requis
   if (!firstName || !lastName || !email || !message) {
     return res.status(400).json({ message: "Tous les champs sont requis" });
   }
 
   try {
+    // Création du contact dans le repository
     const id = await contactRepository.create({
       firstName,
       lastName,
       email,
       message,
     });
-    res.status(201).json({ message: "Message enregistré avec succès", id });
+
+    // Retourner une réponse en cas de succès
+    return res
+      .status(201)
+      .json({ message: "Message enregistré avec succès", id });
   } catch (error) {
+    // Gérer les erreurs et renvoyer une réponse
     console.error("Erreur lors de l'enregistrement du message:", error);
-    res
+
+    return res
       .status(500)
       .json({ message: "Erreur lors de l'enregistrement du message" });
   }
@@ -51,25 +59,20 @@ router.get("/admin/messages", async (req, res) => {
 router.delete("/admin/messages/:id", async (req, res) => {
   const { id } = req.params;
 
-  // Convertir l'ID en nombre et vérifier sa validité
-  const numericId = parseInt(id, 10);
-  if (Number.isNaN(numericId)) {
-    return res.status(400).json({ message: "ID invalide" });
-  }
-
   try {
-    console.log("Tentative de suppression du message avec l'ID:", numericId);
-    const success = await contactRepository.delete(numericId);
-    if (success) {
-      res.status(200).json({ message: "Message supprimé avec succès" });
-    } else {
-      res.status(404).json({ message: "Message non trouvé" });
+    const message = await contactRepository.readById(id);
+
+    if (!message) {
+      return res.status(404).json({ error: "Message non trouvé" });
     }
+
+    await contactRepository.deleteById(id);
+    return res.status(200).json({ message: "Message supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la suppression du message:", error);
-    res
+    return res
       .status(500)
-      .json({ message: "Erreur lors de la suppression du message" });
+      .json({ error: "Erreur lors de la suppression du message" });
   }
 });
+
 module.exports = router;

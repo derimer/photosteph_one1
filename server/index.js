@@ -4,7 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
 
-const apiRouter = require("../server/app/routers/api/router");
+const apiRouter = require("./app/routers/api/router");
 
 const app = express();
 const port = process.env.APP_PORT || 3310;
