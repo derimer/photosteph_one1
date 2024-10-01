@@ -12,11 +12,6 @@ export default function Admin() {
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchMessages();
-    fetchImages();
-  }, []);
-
   const fetchMessages = async () => {
     try {
       const response = await fetch("http://localhost:3310/api/admin/messages");
@@ -42,11 +37,14 @@ export default function Admin() {
       setError("Impossible de charger les images");
     }
   };
+  useEffect(() => {
+    fetchMessages();
+    fetchImages();
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    
-     
+
     // 10 Mo
     setFile(selectedFile);
 
@@ -64,36 +62,34 @@ export default function Admin() {
       setError("Veuillez remplir tous les champs et sélectionner une image");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", newImage.name);
     formData.append("author", newImage.author);
     formData.append("exposure", newImage.exposure);
-  
+
     try {
       const response = await fetch("http://localhost:3310/api/add-image", {
         method: "POST",
         body: formData,
       });
-  
-      // Vérifiez si la réponse est au format JSON
-     if (!response.ok) throw new Error("Erreur lors de l'ajout de l'image");
-    
-     const data = await response.json();
-    console.log("Image ajoutée avec succès", data);
- 
-  setImages([...images, data.image]);
-  setNewImage({ name: "", author: "", exposure: "" });
-    setFile(null);
-    setPreview("");
-  } catch (error) {
-    console.error("Erreur lors de l'ajout de l'image:", error);
-    setError("Erreur lors de l'ajout de l'image");
-  }
-}
 
-  
+      // Vérifiez si la réponse est au format JSON
+      if (!response.ok) throw new Error("Erreur lors de l'ajout de l'image");
+
+      const data = await response.json();
+      console.log("Image ajoutée avec succès", data);
+
+      setImages([...images, data.image]);
+      setNewImage({ name: "", author: "", exposure: "" });
+      setFile(null);
+      setPreview("");
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'image:", error);
+      setError("Erreur lors de l'ajout de l'image");
+    }
+  };
 
   const handleDeleteImage = async (id) => {
     try {
@@ -108,7 +104,22 @@ export default function Admin() {
       setError("Erreur lors de la suppression de l'image");
     }
   };
-
+  const handleDeleteMessage = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3310/api/admin/messages/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok)
+        throw new Error("Erreur lors de la suppression de l'image");
+      setMessages(messages.filter((message) => message.id !== id));
+    } catch (error) {
+      console.error("Erreur:", error);
+      setError("Erreur lors de la suppression de l'image");
+    }
+  };
   return (
     <div className="gestion">
       <h1>Gestion des Images</h1>
@@ -155,10 +166,12 @@ export default function Admin() {
           }
           required
         />
-        <button id ="ajouterImg" onClick={handleAddImage}>Ajouter l'image</button>
+        <button id="ajouterImg" onClick={handleAddImage}>
+          Ajouter l'image
+        </button>
       </div>
 
-      <div className ="exist">
+      <div className="exist">
         <h2>Images existantes</h2>
         <ul>
           {images.map((image) => (
@@ -179,9 +192,12 @@ export default function Admin() {
               <li key={message.id}>
                 <strong>
                   {message.firstName} {message.lastName}
-                </strong>{" "}
+                </strong>
                 ({message.email}):
                 <p>{message.message}</p>
+                <button onClick={() => handleDeleteMessage(message.id)}>
+                  supprimer
+                </button>
               </li>
             ))}
           </ul>

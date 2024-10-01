@@ -1,17 +1,15 @@
 // controllers/imageController.js
 const path = require("path");
-const multer = require("multer"); // Importer Multer
+const multer = require("multer");
+// Importer Multer
 const ImageRepository = require("../../database/models/ImageRepository");
-const imageRepository = new ImageRepository();
 
+const imageRepository = new ImageRepository();
 
 // Configuration Multer pour le stockage des fichiers
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(
-      null,
-      path.join(__dirname, "../../../public/uploads")
-    ); // Dossier de stockage
+    cb(null, path.join(__dirname, "../../../public/uploads")); // Dossier de stockage
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -34,8 +32,8 @@ exports.getAllImages = async (req, res) => {
   }
 };
 
-
-/*exports.addImage = async (req, res) => {
+/*
+exports.addImage = async (req, res) => {
     const { name, author, exposure } = req.body;
     console.log("Fichier reçu:", req.file);
     console.log("Données reçues:", req.body);
@@ -70,7 +68,9 @@ exports.getAllImages = async (req, res) => {
         error: error.message,
       });
     }
-  }*/exports.addImage = async (req, res) => {
+  }
+    */
+exports.addImage = async (req, res) => {
   const { name, author, exposure } = req.body;
   console.log("Fichier reçu:", req.file);
   console.log("Données reçues:", req.body);
@@ -95,13 +95,14 @@ exports.getAllImages = async (req, res) => {
       author,
       exposure,
     });
-    
+
     // Récupère la nouvelle image créée
     const newImage = await imageRepository.read(id);
-    
+
     // Envoie une seule réponse avec l'image ajoutée
-    res.status(201).json({ message: "Image ajoutée avec succès", image: newImage });
-    
+    res
+      .status(201)
+      .json({ message: "Image ajoutée avec succès", image: newImage });
   } catch (error) {
     console.error("Erreur lors de l'ajout de l'image:", error.message);
     res.status(500).json({
@@ -110,8 +111,6 @@ exports.getAllImages = async (req, res) => {
     });
   }
 };
-
-
 
 // Route pour supprimer une image
 exports.deleteImage = async (req, res) => {

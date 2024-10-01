@@ -290,7 +290,7 @@ main#contact1 {
   display: flex;
 }
 .gestion{
-  display:flex;
+  display:grid;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -357,6 +357,9 @@ main#contact1{
   border-radius:10px;
   background-color: orange;
   color:white;
+}
+.mess li{
+  list-style-type: none;
 }
 .ajoutImage {
   display: flex;

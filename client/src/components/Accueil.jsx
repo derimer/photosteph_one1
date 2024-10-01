@@ -1,5 +1,5 @@
 // src/components/Accueil.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Pecheur from "../assets/images/image-1.jpg";
 import Gerbier from "../assets/images/image-2.jpg";
