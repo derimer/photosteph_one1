@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/favicon.ico", express.static(path.join(__dirname, "favicon.ico")));
+app.use( express.static(path.join(__dirname, "favicon.ico")));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
