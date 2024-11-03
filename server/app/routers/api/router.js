@@ -14,7 +14,7 @@ router.post("/add-image", upload.single("file"), imgActions.addImage);
 
 router.delete("/images/:id", imgActions.deleteImage);
 
-router.post("/Contact", async (req, res) => {
+router.post("/api/Contact", async (req, res) => {
   const { firstName, lastName, email, message } = req.body;
 
   // Validation des champs requis

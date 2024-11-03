@@ -1,25 +1,39 @@
+CREATE TABLE user (
+  id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE item (
+  id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 CREATE TABLE Contact (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firstName VARCHAR(100) NOT NULL,
+  lastName VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL
 );
 
 CREATE TABLE images (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    filename VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    author VARCHAR(255) NOT NULL,
-    exposure VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  filename VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  author VARCHAR(255) NOT NULL,
+  exposure VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE admin(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL,   
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE admin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 INSERT INTO images (filename, name, author, exposure) VALUES
 ('Pecheur', 'pécheurs', 'stephane Valentin', '100 ISO - 18 mm - f/22 - 302 Sec'),
 ('Gerbier', 'mont gerbier sous la neige', 'stephane valentin', '200 ISO - 150 mm - f/10 - 1/320 Sec'),

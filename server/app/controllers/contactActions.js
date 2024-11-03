@@ -32,25 +32,27 @@ const sendContactEmail = (req, res) => {
   }
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
+    from: email, // replace with your sender email
+    to: 'recipient@example.com', // replace with recipient email
     subject: `Nouveau message de ${firstName} ${lastName}`,
-    text: `
-      De: ${firstName} ${lastName}
-      Email: ${email}
-      Message: ${message}
-    `,
+    text: message,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Erreur lors de l'envoi de l'email:", error);
       return res.status(500).send("Erreur lors de l'envoi du message");
-    } else {
-      console.log("Email envoyé avec succès:", info.response);
-      return res.status(200).send("Message envoyé avec succès");
     }
+
+    console.log("Email envoyé avec succès:", info.response);
+    return res.status(200).send("Message envoyé avec succès");
   });
+
+  // Return a placeholder response or undefined to satisfy the function's return requirement
+   
 };
 
+
+ 
+  
 module.exports = { sendContactEmail, browse };

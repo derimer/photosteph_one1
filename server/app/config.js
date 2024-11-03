@@ -1,11 +1,13 @@
 // Load the express module to create a web application
 
 const express = require("express");
-const mysql = require("mysql2");
+
+
 const app = express();
 const cors = require("cors");
 const path = require("path");
-const db = require("/home/isis/photosteph_one/server/database");
+
+const db = require("./database");
 
 app.get("/api/test-db", async (req, res) => {
   try {
@@ -26,6 +28,7 @@ app.use(
 );
 
 const apiRouter = require("./routers/api/router");
+
 app.use("/api", apiRouter);
 
 const reactBuildPath = path.join(__dirname, "/../../client/build");
@@ -44,9 +47,7 @@ app.post("/send-email", (req, res) => {
   // Logique pour gérer l'envoi d'email, par exemple avec Nodemailer
   // ou une autre méthode de traitement des données du formulaire
 
-  console.log(
-    `firstName: ${firstName},lastName:${lastName} Email: ${email}, Message: ${message}`
-  );
+  
 
   // Pour l'instant, nous renvoyons une réponse de succès
   res.status(200).send("OK");

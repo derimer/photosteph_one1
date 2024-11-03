@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -17,28 +17,27 @@ export default function Contact() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3310/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  
+    fetch("http://localhost:3310/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erreur lors de l'envoi du message");
+        }
+        setStatus("Message envoyé avec succès !");
+        setFormData({ firstName: "", lastName: "", email: "", message: "" });
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+        setStatus("Erreur lors de l'envoi du message");
       });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'envoi du message");
-      }
-
-      setStatus("Message envoyé avec succès !");
-      setFormData({ firstName: "", lastName: "", email: "", message: "" });
-    } catch (error) {
-      console.error("Erreur:", error);
-      setStatus("Erreur lors de l'envoi du message");
-    }
   };
-
+  
   return (
     <main id="contact1">
       <h1>Contactez-moi</h1>
@@ -91,7 +90,7 @@ export default function Contact() {
               value={formData.message}
               onChange={handleChange}
               required
-            ></textarea>
+           />
           </div>
         </div>
         <button type="submit">Envoyer</button>
